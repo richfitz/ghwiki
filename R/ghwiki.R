@@ -13,18 +13,16 @@ init <- function(Makefile="Makefile", clone=TRUE) {
   }
   init_makefile(Makefile)
   # Install these locally
-  install_ghwiki_file("wiki_redirect.sh",  ".wiki.sh")
-  install_ghwiki_file("scripts_redirect.sh", ".scripts.sh")
+  install_ghwiki_file("ghwiki_redirect.sh",  ".ghwiki")
   if (clone) {
-    system("./.wiki.sh clone")
+    system("./.ghwiki clone")
   }
   invisible()
 }
 
 ## Install scripts globally
 install_scripts <- function(path) {
-  install_ghwiki_file("wiki_redirect.sh",    file.path(path, "wiki.sh"))
-  install_ghwiki_file("scripts_redirect.sh", file.path(path, "scripts.sh"))
+  install_ghwiki_file("ghwiki_redirect.sh", file.path(path, "ghwiki"))
   invisible()
 }
 

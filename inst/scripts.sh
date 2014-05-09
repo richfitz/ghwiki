@@ -66,5 +66,5 @@ case $1 in
 	echo "$(markdown_base)"
 	;;
     *)
-	echo $"Usage `basename $0` {list|base|generated_Rmd|targets}"
+	echo $"Usage scripts {list|base|generated_Rmd|targets}"
 esac

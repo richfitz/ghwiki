@@ -140,7 +140,7 @@ function rollback_wiki {
     echo "Rolling back from ${PREV_SHA}"
     git $GIT_WIKI reset --hard HEAD^
     echo "Change your mind?"
-    echo "  ./.wiki.sh reset_to $PREV_SHA"
+    echo "  ./.ghwiki reset_to $PREV_SHA"
 }
 
 function reset_wiki_to {
@@ -184,7 +184,11 @@ case $1 in
 	shift
 	git ${GIT_WIKI} "$@"
 	;;
+    scripts)
+        shift
+        ${SCRIPTS_SH} "$@"
+        ;;
     *)
-	echo $"Usage `basename $0` {update|update_script name|publish|reset|rollback|reset_to|git}"
+	echo $"Usage ghwiki {update|update_script|publish|reset|rollback|reset_to|git|scripts}"
 	exit 1
 esac

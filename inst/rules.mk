@@ -3,7 +3,7 @@ RSCRIPT = Rscript
 
 GHWIKI_PATH := $(shell ${RSCRIPT} -e "ghwiki:::path()")
 KNIT_SH = ${GHWIKI_PATH}/knit.sh
-WIKI_SH = ${GHWIKI_PATH}/wiki.sh
+GHWIKI_SH = ${GHWIKI_PATH}/ghwiki.sh
 SCRIPTS_SH = ${GHWIKI_PATH}/scripts.sh
 
 # Lots of GNU extensions here I think.
@@ -35,15 +35,15 @@ clean:
 	rm -rf figure cache
 
 wiki_clone:
-	${WIKI_SH} clone
+	${GHWIKI_SH} clone
 wiki_update: all
-	${WIKI_SH} update
+	${GHWIKI_SH} update
 wiki_publish:
-	${WIKI_SH} publish
+	${GHWIKI_SH} publish
 wiki_reset:
-	${WIKI_SH} reset
+	${GHWIKI_SH} reset
 wiki_rollback:
-	${WIKI_SH} rollback
+	${GHWIKI_SH} rollback
 
 .PHONY: all clean wiki_clone wiki_update wiki_reset wiki_publish wiki_rollback
 .SECONDARY: ${TARGETS} ${TARGETS_RMD}
