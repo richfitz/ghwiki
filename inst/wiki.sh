@@ -2,6 +2,8 @@
 WIKI_DIR=$(git rev-parse --show-toplevel)/wiki
 FIGURE_DIR="figure"
 GIT_WIKI="--git-dir=$WIKI_DIR/.git --work-tree=$WIKI_DIR"
+GHWIKI_PATH=$(Rscript -e "ghwiki:::path()")
+SCRIPTS_SH=${GHWIKI_PATH}/scripts.sh
 
 function github_url {
     for remote in $(git remote)
@@ -80,7 +82,7 @@ function reset_wiki {
 # might be a bit faster.
 function update_script {
     check_wiki_exists
-    S_BASE="${1%.*}"
+    S_BASE="${1}"
     echo "Updating ${S_BASE}"
 
     # Delete all old figures for this case.  This is needed because we
@@ -104,9 +106,10 @@ function update_script {
 
 function update_wiki {
     check_wiki_exists
-    while read S; do
+    for S in $(${SCRIPTS_SH} base)
+    do
 	update_script $S
-    done < .wiki_scripts
+    done
 }
 
 # It could be that we want to check that the working directory is

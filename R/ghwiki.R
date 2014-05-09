@@ -7,15 +7,20 @@
 init <- function(Makefile="Makefile") {
   ## Or add a template in, if we can handle comments yet?
   if (!file.exists(".wiki_scripts")) {
-    touch(".wiki_scripts")
+    writeLines("# List script files here", ".wiki_scripts")
   }
   init_makefile(Makefile)
-  init_wiki.sh(".wiki.sh")
+  # Install these locally
+  install_ghwiki_file("wiki.sh",    ".wiki.sh")
+  install_ghwiki_file("scripts.sh", ".scripts.sh")
   invisible()
 }
 
-touch <- function(filename) {
-  writeLines(character(0), filename)
+## Install scripts globally
+install_scripts <- function(path) {
+  install_ghwiki_file("wiki.sh",    path)
+  install_ghwiki_file("scripts.sh", path)
+  invisible()
 }
 
 path <- function() {
@@ -42,7 +47,7 @@ init_makefile <- function(filename) {
   }
 }
 
-init_wiki.sh <- function(filename) {
-  file.copy(system.file("wiki_redirect.sh", package="ghwiki"),
-            filename, overwrite=TRUE)
+install_ghwiki_file <- function(file, dest) {
+  file.copy(system.file(file, package="ghwiki"),
+            dest, overwrite=TRUE)
 }

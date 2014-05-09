@@ -1,17 +1,14 @@
-# Make Rscript less braindead by loading the methods package
-# RSCRIPT_PKGS := $(shell Rscript -e 'library(methods);writeLines(Sys.getenv("R_DEFAULT_PACKAGES"))')
-# RSCRIPT = Rscript --default-packages="${RSCRIPT_PKGS},methods"
+# -*- makefile -*-
 RSCRIPT = Rscript
 
 GHWIKI_PATH := $(shell ${RSCRIPT} -e "ghwiki:::path()")
 KNIT_SH = ${GHWIKI_PATH}/knit.sh
 WIKI_SH = ${GHWIKI_PATH}/wiki.sh
+SCRIPTS_SH = ${GHWIKI_PATH}/scripts.sh
 
 # Lots of GNU extensions here I think.
-# TODO: Skip blank lines and comments when reading .wiki_scripts
-SCRIPTS = $(shell cat .wiki_scripts)
-TARGETS = $(patsubst %.R,%.md, ${SCRIPTS})
-TARGETS_RMD = $(patsubst %.R,%.Rmd, ${SCRIPTS})
+TARGETS = $(shell ${SCRIPTS_SH} targets)
+TARGETS_RMD = $(shell ${SCRIPTS_SH} generated_Rmd)
 
 # This one is useful only for me, or for other people who use sowsear.
 # I think that knitr has something like this built in now.
@@ -33,7 +30,8 @@ TARGETS_RMD = $(patsubst %.R,%.Rmd, ${SCRIPTS})
 all: ${TARGETS}
 
 clean:
-	rm -f ${TARGETS} ${TARGETS_RMD}
+	rm -f ${TARGETS}
+	rm -f ${TARGETS_RMD}
 	rm -rf figure cache
 
 wiki_clone:
