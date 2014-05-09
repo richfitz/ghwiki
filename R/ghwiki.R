@@ -11,15 +11,15 @@ init <- function(Makefile="Makefile") {
   }
   init_makefile(Makefile)
   # Install these locally
-  install_ghwiki_file("wiki.sh",    ".wiki.sh")
-  install_ghwiki_file("scripts.sh", ".scripts.sh")
+  install_ghwiki_file("wiki_redirect.sh",  ".wiki.sh")
+  install_ghwiki_file("scripts_direct.sh", ".scripts.sh")
   invisible()
 }
 
 ## Install scripts globally
 install_scripts <- function(path) {
-  install_ghwiki_file("wiki.sh",    path)
-  install_ghwiki_file("scripts.sh", path)
+  install_ghwiki_file("wiki_redirect.sh",    file.path(path, "wiki.sh"))
+  install_ghwiki_file("scripts_redirect.sh", file.path(path, "scripts.sh"))
   invisible()
 }
 
@@ -27,8 +27,40 @@ path <- function() {
   writeLines(system.file(package="ghwiki"))
 }
 
-knitr_hooks <- function() {
-  source(system.file("knitr_hooks.R", package="ghwiki"))
+knitr_hooks <- function(prefix) {
+  ## Start with the basic markdown options
+  knitr::render_markdown()
+
+  ## Hook to replace ```r -> ```S in generated output -- this renders
+  ## better on github.
+  knitr::knit_hooks$set(source=function(x, options)
+                        paste0('\n\n```S\n', x, '\n```\n\n'))
+
+  ## Include a little footer at the bottom of each page:
+  local({
+    knit_and_read <- function(filename) {
+      if (file.exists(filename)) {
+        readLines(knitr::knit(filename, tempfile(), quiet=TRUE))
+      } else {
+        character(0)
+      }
+    }
+    document_with_footer <- function(x) {
+      knitr::knit_hooks$set(document=identity)
+      c(x, knit_and_read(".knitr_footer.Rmd"))
+    }
+    knitr::knit_hooks$set(document=document_with_footer)
+  })
+
+  ## Hook to make more friendly (smaller) figure margins and set the
+  ## hook to run by by default.  Pass small_mar=FALSE to disable.
+  knitr::knit_hooks$set(small_mar=function(before, options, envir) {
+    if (before) par(mar=c(4, 4, .1, .1)) # smaller margin on top and right
+  })
+  knitr::opts_chunk$set(small_mar=TRUE,
+                        error=FALSE, tidy=FALSE, fig.height=5,
+                        fig.path=sprintf("figure/%s__", prefix),
+                        cache.path=sprintf("cache/%s__", prefix))
 }
 
 rules.mk <- function() {

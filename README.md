@@ -24,7 +24,7 @@ make wiki_clone
 
 The git repository must be from github, and the *first* remote that has a github url will be used.
 
-Add names of `R` or `Rmd` scripts to the file `.wiki_scripts`.  Blank lines and lines beginning with "#" are ignored, and whitespace is trimmed.  At the moment, any file *not* ending with `.R` or `.Rmd` is ignored.
+Add names of `R` or `Rmd` scripts to the file `.wiki_scripts`.  Blank lines and lines beginning with "#" are ignored, and whitespace is trimmed.  If `.md` files are added, they will be copied to the wiki, along with any figures named following the same conventions we convince knitr to follow.  At the moment, any file *not* ending with `.R`, `.Rmd` or `.md` is ignored, and duplicated lines will probably cause all sorts of mischief.
 
 Run
 
@@ -71,4 +71,4 @@ If you get fed up with typing `./.wiki.sh` (which gets old fast) run
 Rscript -e "ghwiki:::install_scripts('~/bin')"
 ```
 
-which will install the scripts `wiki.sh` and `scripts.sh` into "~/bin" (assuming that it exists!).  If that is in your `$PATH` then you can run `wiki.sh git log` and things like that.
+which will install the scripts `wiki.sh` and `scripts.sh` into "~/bin" (assuming that it exists!).  If that is in your `$PATH` then you can run `wiki.sh git log` and things like that.  Note that these scripts just redirect to the true scripts, so can be left in place through package upgrades -- the scripts that are run are those in the package.

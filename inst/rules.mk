@@ -36,7 +36,7 @@ clean:
 
 wiki_clone:
 	${WIKI_SH} clone
-wiki_update:
+wiki_update: all
 	${WIKI_SH} update
 wiki_publish:
 	${WIKI_SH} publish

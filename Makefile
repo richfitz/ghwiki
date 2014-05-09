@@ -11,7 +11,6 @@ install:
 	R CMD INSTALL .
 
 clean:
-	make -C src clean
 
 build:
 	R CMD build .

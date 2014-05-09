@@ -3,7 +3,7 @@ WIKI_DIR=$(git rev-parse --show-toplevel)/wiki
 FIGURE_DIR="figure"
 GIT_WIKI="--git-dir=$WIKI_DIR/.git --work-tree=$WIKI_DIR"
 GHWIKI_PATH=$(Rscript -e "ghwiki:::path()")
-SCRIPTS_SH=${GHWIKI_PATH}/.scripts.sh
+SCRIPTS_SH=${GHWIKI_PATH}/scripts.sh
 
 function github_url {
     for remote in $(git remote)
@@ -77,9 +77,10 @@ function reset_wiki {
     git ${GIT_WIKI} reset --hard HEAD
 }
 
-# One option here would be to do nothing unless the local scripts and
-# the wiki'd version are different (compare the .md files), which
-# might be a bit faster.
+function exists {
+    [ -e "$1" ]
+}
+
 function update_script {
     check_wiki_exists
     S_BASE="${1}"
@@ -90,23 +91,26 @@ function update_script {
     # persist in the wiki.  Perhaps better would be to use rsync with
     # some pattern matching, but we need to hit the 'git rm' at some
     # point.
-    git $GIT_WIKI rm -f --quiet --ignore-unmatch -- "$FIGURE_DIR/${S_BASE}_*"
+    git $GIT_WIKI rm -f --quiet --ignore-unmatch -- "$FIGURE_DIR/${S_BASE}__*"
 
     # That *might* have deleted the wiki figure directory:
     mkdir -p $WIKI_DIR/$FIGURE_DIR
 
-    # Copy the new stuff over:
+    # Copy the new stuff over and add to git:
+    # a. actual file
     cp ${S_BASE}.md $WIKI_DIR
-    cp $FIGURE_DIR/${S_BASE}_* $WIKI_DIR/$FIGURE_DIR/
-
-    # And add it to git:
     git $GIT_WIKI add ${S_BASE}.md
-    git $GIT_WIKI add --ignore-errors "$FIGURE_DIR/${S_BASE}_*"
+    # b. figures if they exist
+    if exists $FIGURE_DIR/${S_BASE}__*
+    then
+	cp $FIGURE_DIR/${S_BASE}__* $WIKI_DIR/$FIGURE_DIR/
+	git $GIT_WIKI add --ignore-errors "$FIGURE_DIR/${S_BASE}__*"
+    fi
 }
 
 function update_wiki {
     check_wiki_exists
-    for S in $(${SCRIPTS_SH} base)
+    for S in $(${SCRIPTS_SH} base) $(${SCRIPTS_SH} markdown_base)
     do
 	update_script $S
     done
@@ -181,6 +185,6 @@ case $1 in
 	git ${GIT_WIKI} "$@"
 	;;
     *)
-	echo $"Usage `basename $0` {update|update_script name|publish|reset|rollback}"
+	echo $"Usage `basename $0` {update|update_script name|publish|reset|rollback|reset_to|git}"
 	exit 1
 esac

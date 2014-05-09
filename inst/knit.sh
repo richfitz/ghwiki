@@ -26,9 +26,6 @@ PREFIX=$(echo `basename $TARGET` | sed 's/.Rmd$//')
 
 # Common options that I want for everything (must be at least one
 # option, but all but fig.height I *always* want.
-KNITR_OPTS="error=FALSE, tidy=FALSE, fig.height=5"
-KNITR_PATHS="fig.path='figure/${PREFIX}_', cache.path='cache/${PREFIX}_'"
-KNITR_OPTS_CMD="knitr::opts_chunk\$set(${KNITR_OPTS}, ${KNITR_PATHS})"
-KNITR_HOOKS="ghwiki:::knitr_hooks()"
+KNITR_HOOKS="ghwiki:::knitr_hooks('${PREFIX}')"
 
-Rscript -e "library(methods); ${KNITR_OPTS_CMD}; ${KNITR_HOOKS}; knitr::knit('${TARGET}')"
+Rscript -e "library(methods); ${KNITR_HOOKS}; knitr::knit('${TARGET}')"

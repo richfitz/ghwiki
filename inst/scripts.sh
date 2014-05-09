@@ -23,6 +23,16 @@ function targets {
     valid_scripts | replace_ext "md"
 }
 
+function markdown {
+    cat $WIKI_SCRIPTS | trim | \
+	grep -E -v '^(#|$)'  | \
+	trim | grep -E '.[.]md$'
+}
+
+function markdown_base {
+    markdown | sed -E 's/[.]md$//'
+}
+
 # Little utilities:
 function drop_ext {
     sed -E 's/[.]R(md)?$//'
@@ -48,6 +58,12 @@ case $1 in
 	;;
     targets)
 	echo "$(targets)"
+	;;
+    markdown)
+	echo "$(markdown)"
+	;;
+    markdown_base)
+	echo "$(markdown_base)"
 	;;
     *)
 	echo $"Usage `basename $0` {list|base|generated_Rmd|targets}"
