@@ -2,9 +2,11 @@
 ##'
 ##' @title Initialise Wiki Workflow Directory
 ##' @param Makefile Filename to add rules to
+##' @param clone Try to clone the repository immediately on
+##' initialising?
 ##' @author Rich FitzJohn
 ##' @export
-init <- function(Makefile="Makefile") {
+init <- function(Makefile="Makefile", clone=TRUE) {
   ## Or add a template in, if we can handle comments yet?
   if (!file.exists(".wiki_scripts")) {
     writeLines("# List script files here", ".wiki_scripts")
@@ -13,6 +15,9 @@ init <- function(Makefile="Makefile") {
   # Install these locally
   install_ghwiki_file("wiki_redirect.sh",  ".wiki.sh")
   install_ghwiki_file("scripts_direct.sh", ".scripts.sh")
+  if (clone) {
+    system("./wiki.sh clone")
+  }
   invisible()
 }
 
