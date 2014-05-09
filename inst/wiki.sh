@@ -3,7 +3,7 @@ WIKI_DIR=$(git rev-parse --show-toplevel)/wiki
 FIGURE_DIR="figure"
 GIT_WIKI="--git-dir=$WIKI_DIR/.git --work-tree=$WIKI_DIR"
 GHWIKI_PATH=$(Rscript -e "ghwiki:::path()")
-SCRIPTS_SH=${GHWIKI_PATH}/scripts.sh
+SCRIPTS_SH=${GHWIKI_PATH}/.scripts.sh
 
 function github_url {
     for remote in $(git remote)
